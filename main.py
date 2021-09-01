@@ -19,7 +19,6 @@ def scale_same_aspect(image, width = None, height = None, noblank = False):
     else:
         resize_aspect_1 = width / image.get_width()
         resize_aspect_2 = height / image.get_height()
-        print([resize_aspect_1, resize_aspect_2])
         if noblank:
             resize_aspect = resize_aspect_1 if resize_aspect_2 < resize_aspect_1 else resize_aspect_2
         else:
@@ -50,22 +49,26 @@ pygame.init()
 
 username = os.environ['USERNAME']
 
-try:
+if len(sys.argv) >= 2:
     if os.path.isdir(sys.argv[1]):
         PHOTOS_DIR = sys.argv[1]
+        PHOTOS_DIR += "\\"
         print("Opening ", end = "")
     elif os.path.isfile(sys.argv[1]):
-        PHOTOS_DIR = os.path.split(sys.argv[1])[0]
+        PHOTOS_DIR = os.path.dirname(sys.argv[1])
+        if PHOTOS_DIR[len(PHOTOS_DIR)-1] != "\\":
+            PHOTOS_DIR += "\\"
         opened_filepath = sys.argv[1]
         print("Opening ", end = "")
     else:
         print("Invalid argument received. opening default folder ", end = "")
         PHOTOS_DIR = "C:\\Users\\" + username + "\\Pictures\\"
-except:
+else:
     print("No argument received. opening default folder ", end = "")
     PHOTOS_DIR = "C:\\Users\\" + username + "\\Pictures\\"
 
 photos_path_list = []
+print(PHOTOS_DIR)
 print(PHOTOS_DIR + "......", end = "")
 
 for photo in glob.glob(PHOTOS_DIR + "*.jpg"):
@@ -77,7 +80,6 @@ print(str(len(photos_path_list)) + "photos loaded")
 
 if len(photos_path_list)==0:
     print("no  photos loaded, exiting software...")
-    quit()
 
 print("initializing screen......", end = "")
 WIDTH = 768
@@ -90,7 +92,9 @@ myfont = pygame.font.Font(None, 32)
 
 state = "normal"
 time_from_last_change = 1
+print(photos_path_list)
 try:
+    print("opening " + opened_filepath + "......")
     photo_index = photos_path_list.index(opened_filepath)
 except:
     photo_index = 0
